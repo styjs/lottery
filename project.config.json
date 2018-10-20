@@ -1,0 +1,15 @@
+{
+	"description": "A WePY project",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wxc5a00810a653dc08",
+	"projectname": "lottery",
+	"miniprogramRoot": "dist/",
+	"condition": {}
+}

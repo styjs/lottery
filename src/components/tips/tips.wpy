@@ -1,0 +1,89 @@
+<template name="authorize">
+<view>
+    <view wx:if="{{layer.authorizeScope=='scope.userInfo'}}" class="layer row middle {{layer.authorize}}" style="position: fixed;">
+        <view class="layer_modal_box" style="width: 86.67%;">
+            <view class="dialog_modal_tit">获取用户信息失败</view>
+            <view class="dialog_modal_text">微信授权失败使我们无法获取您的用户信息，</view>
+            <view class="dialog_modal_text">导致无法使用此功能，请重新授权使用</view>
+            <view class="dialog_modal_btngroup row">
+                <button class="dialog_modal_btn blue col" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">授权</button>
+            </view>
+        </view>
+    </view>
+    <view wx:else class="layer row middle {{layer.authorize}}" style="position: fixed;">
+        <view class="layer_modal_box" style="width: 86.67%;">
+            <view class="dialog_modal_tit">{{ layer.title }}</view>
+            <view class="dialog_modal_text" wx:for="{{ layer.desc }}" wx:key="index">{{ item }}</view>
+            <view class="dialog_modal_btngroup row">
+                <button class="dialog_modal_btn col" bindtap="closeLayer">取消</button>
+                <button class="dialog_modal_btn blue col" bindtap="authLayerClick">去授权</button>
+            </view>
+        </view>
+    </view>
+</view>
+</template>
+
+<script>
+    export function modTips(that, msg){
+    let modTips=that.data.modTips || {
+        content:'',
+        duration:2000,
+        open:false
+    }
+
+    if(modTips.setFn!=undefined){
+        clearTimeout(modTips.setFn)
+    }
+
+    modTips.content = msg
+    modTips.open = true
+    modTips.setFn = setTimeout(()=>{
+        modTips.content=''
+        modTips.open=false
+        that.setData({
+        modTips: modTips
+        })
+    }, modTips.duration)
+    that.setData({
+        modTips: modTips
+    })
+    }
+
+    export function modTips2(that, msg){
+    let layer = that.data.layer || {}
+    layer.errtips2 = 'active'
+    that.setData({layer: layer, modTips2: {errMsg: msg}})
+    }
+
+    export function authorizeShow(target, scope, text, success){
+    let that = target
+    let layer = that.data.layer || {}
+    layer.authorize = 'active'
+    layer.authorizeScope = scope
+
+    // text为弹窗文字，数组，第一项为title(字符串)，第二项为desc(数组)
+    layer.title = '获取授权信息失败'
+    layer.desc = ['微信授权失败使我们无法获取您的用户信息，', '导致无法使用此功能，请重新授权使用']
+    if(Array.isArray(text)){
+        layer.title = text[0]
+        layer.desc = text[1]
+    }
+    
+    that.setData({layer: layer})
+    that.authLayerClick = success || function(){}
+    that.closeLayer = function(){
+        authorizeHide(that);
+    }
+    that.bindGetUserInfo = function(e){
+        if(e.detail && e.detail.errMsg == "getUserInfo:ok"){
+        success && success(e.detail)
+        }
+    }
+    }
+
+    export function authorizeHide(that) {
+    let layer = that.data.layer || {}
+    layer.authorize = ''
+    that.setData({layer: layer})
+    }
+</script>

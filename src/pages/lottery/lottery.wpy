@@ -1,0 +1,505 @@
+<style>
+    .container{background-color: #f6d290;}
+    .img {width: 100%;display: block;}
+
+    .header {position: relative;}
+    .aware_title {text-align: center;color: #ffffff;font-weight: 600; font-size: 30rpx;position: absolute;top: 87%;left: 50%;
+    transform: translate(-50%,-87%);-webkit-transform: translate(-50%,-87%);}
+    .aware_title text {color: #ec2a20;}
+
+    /* 抽奖红包  */
+    .content {position: relative;}
+    .prizeContent {position: absolute;top: 4.7%;height: 278rpx;width: 78%;margin-left: 82rpx;z-index: 8;overflow: hidden;}
+    .prizeList {width: 177rpx;transform-style: preserve-3d;-webkit-transform-style: preserve-3d;  
+    background-image: -moz-linear-gradient( 90deg, rgb(222,213,213) 0%, rgb(239,234,234) 21%, rgb(255,255,255) 55%, rgb(222,212,212) 100%);
+    background-image: -webkit-linear-gradient( 90deg, rgb(222,213,213) 0%, rgb(239,234,234) 21%, rgb(255,255,255) 55%, rgb(222,212,212) 100%);
+    background-image: -ms-linear-gradient( 90deg, rgb(222,213,213) 0%, rgb(239,234,234) 21%, rgb(255,255,255) 55%, rgb(222,212,212) 100%);}
+        .prizeList:nth-of-type(1) {border-top-left-radius: 20rpx;border-bottom-left-radius: 18rpx;}
+        .prizeList:nth-of-type(3) {border-top-right-radius: 20rpx;border-bottom-right-radius: 18rpx;}
+    .prizeBox {transform-style: preserve-3d;-webkit-transform-style: preserve-3d;width: 100%;height: 100%;
+    transform-origin: 50% 50%;animation-timing-function: ease;position: relative;z-index: 9;}
+    .redEnvelope {position: absolute;left: 18%;}
+    .img_aware {width: 112rpx;border-radius: 14rpx;}
+
+    /* 按钮 */
+    .box {position: relative;}
+    .img_btn {position: absolute;top: 58rpx;width: 42%;height: 131rpx;left: 49%;transform: translateX(-50%);-webkit-transform: translateX(-50%);}
+        .img_btn_trans .down {
+        opacity: 0;
+        }
+        .img_btn_trans:active .up {
+        opacity: 0;
+        }
+        .img_btn_trans:active .down {
+        opacity: 1;
+        }
+    .img_cir_btn {position: absolute;top: 71rpx;width: 105rpx;height: 102rpx;}
+    .left_btn {left:10%;}
+    .right_btn {right:10%;}
+
+    /* 文字展示 */
+    swiper {height: 75rpx;}
+    .footer {position: relative;}
+    .aware_recode {position: absolute;top: 10%;padding: 0 105rpx;width: 70%;color: #b44600;font-weight: 600;font-size: 28rpx;text-align: center;margin-bottom: 15rpx;}
+    .aware_recode_data view{color: #b44600;font-size: 24rpx;font-weight: 500;}
+    .name {text-overflow:ellipsis;overflow: hidden;white-space: nowrap;width: 150rpx;}
+
+    /* 蒙层样式 */
+    .layerbox {position: absolute;top: 50%;-webkit-transform: translateY(-50%);transform: translateY(-50%);
+    background: url('https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/layer1.png') no-repeat center/100% 100%;width: 100%;}
+    .img_rule {width: 192rpx;height: 41rpx;position: absolute;left: 50%;transform: translateX(-50%);-webkit-transform: translateX(-50%);top: 14.4%;}
+    .circle {display: inline-block;margin-right: 8rpx; background-color: #ff8a34;width: 10rpx;height: 10rpx;border-radius: 50%;}
+    .layer_content {padding: 260rpx 0 40rpx 130rpx;height: 527rpx;width: 66.4%;margin-bottom: 100rpx;}
+    .img_cir {width: 70rpx;height: 70rpx;display:block;margin: 0 auto;margin-bottom: -100rpx;}
+    .layer_rule {color: #666666;font-size: 24rpx;}
+
+    .layer_row {border-bottom: 1px solid #e6e1d6;margin-top: 36rpx;padding-bottom: 36rpx;}
+    .layer_row:last-child {border-bottom: none;}
+    .layer_row text {color: #666666;font-size: 28rpx;}
+    .btn {color: #ff8a34;font-size: 24rpx;border-radius: 25rpx;border: 1px solid #fdc99f;background-color: #fcf3e6;
+    width: 140rpx;height: 50rpx;line-height: 50rpx;text-align: center;}
+    .explain {color: #999999;font-size: 24rpx;}
+    .layer_con {padding-left: 130rpx;}
+
+    .layerframe {position: absolute;top: 50%;-webkit-transform: translateY(-50%);transform: translateY(-50%);
+    background: url('https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/layer2.png') no-repeat center/100% 100%;width: 100%;}
+    .layerframe_no {position: absolute;top: 50%;left:50%;-webkit-transform: translate(-50%,-50%);transform: translateY(-50%,-50%);
+    background: url('https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/layer3.png') no-repeat center/100% 100%;width: 76%;}
+    .layer_middle {padding: 150rpx 90rpx 20rpx 90rpx;margin-bottom: 100rpx;}
+    .layer_center {padding: 280rpx 0 20rpx 155rpx;width: 60%;margin-bottom: 100rpx;}
+    .layer_center_title {padding: 200rpx 0 20rpx 155rpx;width: 60%;margin-bottom: 100rpx;}
+    .inputbox {background-color: #f1efeb;border-radius: 4rpx;height: 62rpx;color: #999999;font-size: 24rpx;margin-top: 14rpx;padding-left: 20rpx;}
+    .img_title {top: 13%;}
+    .img_pro {height: 180rpx;width: 100%;}
+    .img_top {margin-top: 20rpx;}
+    .layer_title {color: #666666;font-size: 29rpx;text-align: center;}
+    .layer_name {color: #ff8a34;font-size: 41rpx;font-weight: 800;text-align: center;}
+    .button {display: block;margin: 0 auto;margin-top: 18rpx; color: #ffffff;font-weight: bold; font-size: 32rpx;height: 78rpx;line-height: 78rpx;text-align: center;
+    background: linear-gradient(to bottom, #ffbc4c,#f5740b);box-shadow:3rpx -8rpx 2rpx rgba(255, 151, 28, 0.4) inset, 3rpx 8rpx 2rpx #f5740b;border-radius: 39rpx;width: 100%;}
+    .button_top {margin-top: 30rpx;}
+    .btn_get {width: 100%;background-color: #d2d2d2;margin-top: 18rpx;border-radius: 39rpx;height: 78rpx;line-height: 78rpx; 
+    color: #ffffff;font-weight: bold;font-size: 32rpx;text-align: center;}
+</style>
+
+<template>
+    <view class='container'>
+        <!-- 抽奖banner部分 -->
+        <view class="header">
+            <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/banner.jpg" class="img" mode="widthFix"/>
+            <!-- 抽奖次数展示 -->
+            <view class='aware_title'>您还有 <text> {{times}} </text> 次抽奖机会</view>
+        </view>
+        <!-- 抽奖红包部分 -->
+        <view class="content">
+            <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/content.jpg" class="img" mode="widthFix"/>
+            <!-- 抽奖框部分 -->
+            <view class='prizeContent row justify-around'>
+                <view class="prizeList" wx:for="{{[1,2,3]}}" wx:key="{{index}}">
+                    <view class="prizeBox column justify" style="transform: rotateX({{animation0}}deg); transition-duration:{{index==0?time0:index==1?time1:time2}}s">
+                        <view wx:for="{{index==0?redEnvelopeList0:index==1?redEnvelopeList1:redEnvelopeList2}}" wx:for-index="i" wx:key="i" 
+                        style="transform:rotateX({{(360/(redEnvelopeList0.length))*(i) - 72}}deg)  translateZ({{275}}rpx);" class='redEnvelope row items'>
+                            <image src="./images/assets/red_envelope{{item.text=='一'?1:item.text=='二'?2:item.text=='三'?3:item.text=='四'?4:item.text=='五'?5:item.text=='六'?6:7}}.jpg" 
+                            class="img_aware" mode="widthFix"/>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <!-- 抽奖按钮部分 -->
+        <view class="box">
+            <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/box.jpg" class="img" mode="widthFix"/>
+            <!-- 游戏规则按钮 -->
+            <image src='https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/cir_btn1.png' class='img_cir_btn left_btn' @tap.stop="showLayer('layerRule')"/>
+            <!-- 立即抽奖按钮 -->
+            <view class="img_btn_trans">
+                <image src='https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/btn.png' class='img_btn up'/>
+                <image src='https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/btn_down.png' class='img_btn down' @tap.stop="{{buttonClicked?'bindGetAwared' :''}}"/>
+            </view>
+            <!-- 我的奖品按钮 -->
+            <image src='https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/cir_btn2.png' class='img_cir_btn right_btn' @tap.stop="showLayer('layerAware')"/>
+        </view>
+        <!-- 抽奖记录部分 -->
+        <view class="footer">
+            <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/footer.jpg" class="img" mode="widthFix"/>
+            <!-- 中奖记录部分 -->
+            <view class="aware_recode"> 一 中奖记录(已有
+                <text> 200034 </text> 人中奖) 一
+                <view class='aware_recode_data'>
+                    <swiper interval="1500" duration="1500" circular="true" vertical="true" previous-margin="15rpx" next-margin="15rpx" autoplay="true">
+                        <block wx:for="{{winInfo}}" wx:key="{{index}}">
+                            <swiper-item class="aware_recode_data row">
+                                <view class="name">{{item.name}}</view>
+                                <view class="prize">刚抽中{{item.prize}}</view>
+                            </swiper-item>
+                        </block>
+                    </swiper>
+                </view>
+            </view>
+        </view>
+
+        <!-- 活动规则蒙层 -->
+        <view class='layer' hidden='{{flags.layerRule}}' @touchmove="preventTouchMove">
+            <view class='layerbox'>
+                <image src='https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/rule.png' class='img_rule'/>
+                <scroll-view class="layer_content" scroll-y>
+                    <view class='layer_rule row items'>
+                        <view class='circle'></view> 活动时间：XXX
+                    </view>
+                    <view class='layer_rule row items'>
+                        <view class='circle'></view> 邀好友投保成功，得现金红包奖励
+                    </view>
+                    <view class='layer_rule'>(1)分享1元险活动商品给好友,好友支付并完成购买,如无退保,保单生效当日12点，您将获得1元现金红包</view>
+                    <view class='layer_rule'>(2)好友须通过您分享的链接购买产品,否则您无法获得红包和1元购险次数奖励</view>
+                    <view class='layer_rule'>(3)红包可点击“查看红包记录”查看详情并提现。提现后红包将发放到微信-钱包</view>
+                    <view class='layer_rule row items'>
+                        <view class="circle"></view> 享超低价1元购险福利
+                    </view>
+                    <view class='layer_rule'>(1)首次进入“1元保险福利”小程序可获得一次1元购险次数</view>
+                    <view class='layer_rule'>(2)每邀请1位好友投保成功，即可增加一次1元购险次数,好友如无退保,保单生效后您将获得一次1元购险次数</view>
+                    <view class='layer_rule'>(3)1元购险仅适用于首页商品</view>
+                    <view class='layer_rule'>4. 本活动最终解释权归小雨伞保险所有。</view>
+                </scroll-view>
+                <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/cir.png" class='img_cir' @tap.stop="hideLayer('layerRule')"/>
+            </view>
+        </view>
+
+        <!-- 我的奖品蒙层 -->
+        <view class='layer' hidden='{{flags.layerAware}}' @touchmove="preventTouchMove">
+            <view class='layerbox'>
+                <image src='https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/aware.png' class='img_rule'/>
+                <scroll-view class='layer_content layer_con' scroll-y>
+                    <view class="layer_row row" wx:for="{{awareInfo}}" wx:key="{{index}}">
+                        <text class='col'>{{item.aware}}</text>
+                        <navigator class="{{item.flag == true ? 'btn' :'explain'}}" url='{{item.url}}' open-type="redirect" @tap.stop="showLayer('layerPrize')">{{item.btn}}</navigator>
+                    </view>
+                </scroll-view>
+                <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/cir.png" class='img_cir' @tap.stop="hideLayer('layerAware')"/>
+            </view>
+        </view>
+
+        <!-- 中奖了蒙层 -->
+        <view class='layer' hidden='{{flags.layerAwared}}' @touchmove="preventTouchMove">
+            <view class='layerframe'>
+                <image src='https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/awared.png' class='img_rule img_title'/>
+                <view class="layer_center">
+                    <view class='layer_title'>一 恭喜您获得 一</view>
+                    <view class="layer_name">100万出行险</view>
+                    <image src='./images/assets/img_pro.png' class="img_pro"/>
+                    <form @submit="formSubmit" report-submit="true">
+                        <input type="text" placeholder='请输入领奖人姓名' class='inputbox' name="username"/>
+                        <input type="number" placeholder='请输入领奖人联系方式' class='inputbox' name="phone"/>
+                        <input type="text" placeholder='请输入收货地址' class='inputbox' name="address"/>
+                        <button formType='submit' class='button'>立即领取</button>
+                    </form>
+                </view>
+                <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/cir.png" class='img_cir' @tap.stop="hideLayer('layerAwared')"/>
+            </view>
+        </view>
+
+        <!-- 未中奖蒙层 -->
+        <view class='layer' hidden='{{flags.layerNoAwared}}' @touchmove="preventTouchMove">
+            <view class='layerframe_no'>
+                <view class="layer_middle">
+                    <view class='layer_title'>一 别伤心，送您一份 一</view>
+                    <view class="layer_name">100万出行险</view>
+                    <image src='./images/assets/img_pro.png' class="img_pro img_top"/>
+                    <button formType='submit' class='button button_top'>立即领取</button>
+                </view>
+                <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/cir.png" class='img_cir' @tap.stop="hideLayer('layerNoAwared')"/>
+            </view>
+        </view>
+
+        <!-- 领取奖品蒙层 -->
+        <view class='layer' hidden='{{flags.layerPrize}}' @touchmove="preventTouchMove">
+            <view class='layerframe'>
+                <image src='https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/awared.png' class='img_rule img_title'/>
+                <view class="layer_center_title">
+                    <view class='layer_title'>一 恭喜您获得 一</view>
+                    <view class="layer_name">100万出行险</view>
+                    <image src='./images/assets/img_pro.png' class="img_pro"/>
+                    <view class="btn_get">已领取</view>
+                </view>
+                <image src="https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/cir.png" class='img_cir' @tap.stop='hideLayer(layerPrize)'/>
+            </view>
+        </view>
+
+    </view>
+
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class lottery extends wepy.page{
+
+    //页面配置
+    config = {
+        navigationBarTitleText: "抽奖活动",
+        enablePullDownRefresh: false,
+        disableScroll: true
+    };
+
+    /**
+     * 页面的初始数据
+     */
+    data = {
+        redEnvelopeList0: [{
+                text: "一"
+            },
+            {
+                text: "二"
+            },
+            {
+                text: "三"
+            },
+            {
+                text: "四"
+            },
+            {
+                text: "五"
+            },
+            {
+                text: "六"
+            },
+            {
+                text: "七"
+            },
+            {
+                text: "八"
+            },
+            {
+                text: "九"
+            },
+            {
+                text: "十",
+            }
+        ],
+        redEnvelopeList1: [{
+                text: "一"
+            },
+            {
+                text: "二"
+            },
+            {
+                text: "三"
+            },
+            {
+                text: "四"
+            },
+            {
+                text: "五"
+            },
+            {
+                text: "六"
+            },
+            {
+                text: "七"
+            },
+            {
+                text: "八"
+            },
+            {
+                text: "九"
+            },
+            {
+                text: "十",
+            }
+        ],
+        redEnvelopeList2: [{
+                text: "一"
+            },
+            {
+                text: "二"
+            },
+            {
+                text: "三"
+            },
+            {
+                text: "四"
+            },
+            {
+                text: "五"
+            },
+            {
+                text: "六"
+            },
+            {
+                text: "七"
+            },
+            {
+                text: "八"
+            },
+            {
+                text: "九"
+            },
+            {
+                text: "十",
+            }
+        ],
+        animation0: 0,
+        time0: 5,
+        time1: 6.2,
+        time2: 7.2,
+        timer: 7.2,//定时器
+        times: 3,//抽奖次数
+        flags: {
+            layerRule: true, //活动规则
+            layerAware: true, //奖品展示
+            layerAwared: true, //中奖后
+            layerNoAwared: true, //未中奖后
+            layerPrize: true, //领取奖品后
+        },
+        username:'',//中奖人输入姓名
+        phone:'',//中奖人输入电话
+        address:'',//中奖人输入收货地址
+        buttonClicked: true,//点击
+        //中奖记录数据
+        winInfo: [{
+                name: "大家的维维维维",
+                prize: "10000元手机资金安全保"
+            },
+            {
+                name: "张伊莲",
+                prize: "20000元少儿意外守护保"
+            },
+            {
+                name: "lililililililililili",
+                prize: "公仔"
+            },
+            {
+                name: "晓晓",
+                prize: "500元大红包"
+            }
+        ],
+        //奖品记录数据
+        awareInfo: [
+            {
+                flag: true,
+                aware: "100万出行险",
+                btn: "立即领取",
+                url:"https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/aware.png"
+            },
+            {
+                flag: true,
+                aware: "50元话费",
+                btn: "立即领取",
+                url: "https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/aware.png"
+            },
+            {
+                flag: true,
+                aware: "公仔",
+                btn: "立即领取",
+                url: "https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/aware.png"
+            },
+            {
+                flag: true,
+                aware: "100万出行险",
+                btn: "立即领取",
+                url: "https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/aware.png"
+            },
+            {
+                flag: false,
+                aware: "100万出行险",
+                btn: "查看详情>",
+                url: "https://sslstatic.xiaoyusan.com/h5/img/weapp/xysBaoXian/lottery/aware.png"
+            }
+        ],
+    };
+    
+    methods = {
+        /**
+         * @params bindGetAwared 抽奖事件
+         */
+        bindGetAwared() {
+            const that = this;
+            //  重置数组顺序后转动两圈
+            this.setData({
+                redEnvelopeList0: that.sort(this.redEnvelopeList0),
+                redEnvelopeList1: that.sort(this.redEnvelopeList1),
+                redEnvelopeList2: that.sort(this.redEnvelopeList2)
+            }, () => {
+                this.animation0 = that.animation0 + 720;
+                this.times = that.times - 1;
+                this.buttonClicked = false;
+                that.$apply();
+            })
+            if (this.times > 1) {
+                setTimeout(function() {
+                    that.flags.layerNoAwared = false;
+                    that.buttonClicked = true;
+                    that.$apply();
+                },this.time2 * 1000)
+            } else {
+                this.buttonClicked = false;
+                wepy.showToast({
+                    title: '您的抽奖次数已经用完啦',
+                    icon: 'none',
+                    duration:2000
+                })
+            }
+        },
+        // 提交表单信息
+        formSubmit (e) {
+            if (e.detail.value.username.length == 0 || e.detail.value.phone.length == 0) {
+                wepy.showToast({
+                    title: '收货人姓名和电话不能为空！',
+                    icon: 'none',
+                    duration: 2000
+                })
+            }
+        },
+        /**
+         * 弹出层函数
+         */
+        //出现
+        showLayer (e,layerName) {
+            let key = layerName.currentTarget.dataset.wpyshowlayerA;
+            this.flags[key] = false;
+        },
+        //消失
+        hideLayer (e,layerName) {
+            let key = layerName.currentTarget.dataset.wpyhidelayerA;
+            this.flags[key] = true;
+        },
+        preventTouchMove(e) {
+            e._prevent = true
+        }   
+    };
+    /**
+     * @params sort 随机事件
+     */
+    sort(data) {
+        //随机数组
+        return data.sort((a, b) => {
+            if (a.prize || b.prize) {} else {
+                return a.text.charCodeAt() + parseInt(Math.random() * 1000) > b.text.charCodeAt() + parseInt(Math.random() * 1000)
+                // charCodeAt() 方法可返回指定位置的字符的 Unicode 编码。这个返回值是 0 - 65535 之间的整数。
+            }
+        })
+    };
+    isLogined () {
+        var sess = cookie.getCookie("sess");
+        var tk = cookie.getCookie("tk");
+        return sess && tk;
+    };
+    onLoad(){
+        // var app = this.$wxapp;
+        // console.log('show',apiUtil)
+        // console.log('app',app)
+        // console.log('this',this)
+        // // apiUtil.request(this.$parent.getApiUrl('/PrizeDraw/userPrize')).then(data => {
+        // //     console.log('调用成功')
+        // // }).catch(e => {
+        // //     console.log(e)
+        // // })
+        // console.log(111111111)
+        // console.log("this",this.$parent.getUserInfo)
+        // this.$parent.getWxInfo({
+        //     scope:'scope.userInfo',
+        //     showLayer:true,
+        //     success(userinfo) {
+        //         console.log('userinfo',userinfo)
+        //     }
+        // })
+    };
+}
+</script>

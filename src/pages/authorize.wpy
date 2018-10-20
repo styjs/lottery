@@ -1,0 +1,107 @@
+<template name="authorize">
+    <view>
+        <view wx:if="{{layer.authorizeScope=='scope.userInfo'}}" class="layer row middle {{layer.authorize}}" style="position: fixed;">
+            <view class="layer_modal_box" style="width: 86.67%;">
+                <view class="dialog_modal_tit">欢迎参与小雨伞抽奖活动</view>
+                <view class="dialog_modal_text">购买相应保险可以获取更多抽奖次数哦~</view>
+                <view class="dialog_modal_btngroup row">
+                    <button class="dialog_modal_btn blue col" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">授权</button>
+                </view>
+            </view>
+        </view>
+        <view wx:else class="layer row middle {{layer.authorize}}" style="position: fixed;">
+            <view class="layer_modal_box" style="width: 86.67%;">
+                <view class="dialog_modal_tit">{{ layer.title }}</view>
+                <view class="dialog_modal_text" wx:for="{{ layer.desc }}" wx:key="index">{{ item }}</view>
+                <view class="dialog_modal_btngroup row">
+                    <button class="dialog_modal_btn col" bindtap="closeLayer">取消</button>
+                    <button class="dialog_modal_btn blue col" bindtap="authLayerClick">去授权</button>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import api from '@/api/api';
+import {
+  SYSTEM_INFO,
+  USER_SPECICAL_INFO,
+  USER_INFO
+} from '@/utils/constant';
+export default class authorize extends wepy.page {
+    config = {
+         navigationBarTitleText: '授权登录',
+    }
+    async onLoad() {
+        let res = await wepy.getSetting()
+        if ((res.authSetting)['scope.userInfo']) {
+            console.log(res.authSetting,'res.authSetting')
+            let userInfo = wepy.getStorageSync(USER_INFO)
+        if (!userInfo.nickName) {
+            let data  = await wepy.getUserInfo()
+            if (data) {
+                wepy.setStorageSync(USER_INFO, data.userInfo)
+            }
+            let res = await wepy.login()
+            if (res.code) {
+            let systemInfo = wepy.getSystemInfoSync();
+            wepy.setStorageSync(SYSTEM_INFO, systemInfo);
+            let rlt = await api.wxJsCode2Session({
+                query: {
+                jsCode: res.code,
+                nickName: data.userInfo.nickName
+                }
+            })
+            if (rlt.data.result) {
+                let data = rlt.data;
+                if (data.data.openid) {
+                wepy.setStorageSync(USER_SPECICAL_INFO, data.data);
+                }
+            }
+        }
+      }
+      wepy.switchTab({
+        url: '/pages/lottery/lottery'
+      })
+    }
+  }
+  async bindGetUserInfo(e) {
+    if (e.detail.errMsg == 'getUserInfo:ok') {
+      let res = await wepy.login();
+      if (res.code) {
+        wepy.setStorageSync(USER_INFO, e.detail.userInfo);
+        let systemInfo = wepy.getSystemInfoSync();
+        wepy.setStorageSync(SYSTEM_INFO, systemInfo);
+        let rlt = await api.wxJsCode2Session({
+          query: {
+            jsCode: res.code,
+            nickName: e.detail.userInfo.nickName
+          }
+        })
+        if (rlt.data.result) {
+          let data = rlt.data;
+          if (data.data.openid) {
+            wepy.setStorageSync(USER_SPECICAL_INFO, data.data);
+            wepy.switchTab({
+              url: '/pages/lottery/lottery'
+            })
+          }
+        } else {
+          let res = await wepy.showModal({
+            title: 'appid有误',
+            content: '授权失败'
+          })
+          if (res.confirm) {
+            wepy.switchTab({
+              url: '/pages/lottery/lottery'
+            })
+          }
+        }
+
+      }
+    }
+  }
+
+}
+</script>

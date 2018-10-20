@@ -1,0 +1,180 @@
+<style>
+@import "./styles/gb750";
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+
+// import { setStore } from 'wepy-redux'
+import { protocol, host, cdn } from './config/system'
+// import {login, request} from './utils/api'
+import {wxPromisify,jsonToStr} from './utils/util'
+import {objectAssign} from './libs/object'
+// import configStore from './store'
+
+// const store = configStore()
+// setStore(store)
+
+export default class extends wepy.app {
+
+  config = {
+    pages: [
+      'pages/lottery/lottery',
+      'pages/authorize',
+      'pages/index'
+    ],
+    window: {
+      backgroundTextStyle: 'dark',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: '小雨伞保险',
+      navigationBarTextStyle: 'black',
+      backgroundColor: "#f0f0f0",
+      enablePullDownRefresh: false
+    }
+  };
+
+  globalData = {
+    userInfo: null,
+    systemInfo: null,
+    protocol: protocol,
+    host: host,
+    cdn: cdn,
+    serverTime: 0,
+    clientTime: 0
+  };
+
+  constructor () {
+    super()
+    // 两个中间件
+    this.use('requestfix') // requestfix: 修复小程序请求并发问题。
+    this.use('promisify')  // promisify：使用wepy.xxx的方式请求小程序原生API都将Promise化。
+  };
+
+  onLaunch(options) {
+    console.log('wepy',wepy)
+    console.log('wepy',wepy.authorize? true: '')
+    console.log('wepy',wepy.login)
+    var that = this
+    that.testAsync()
+    that.globalData.systemInfo = wepy.getSystemInfoSync()
+    that.globalData.serverTime = new Date().getTime()
+    that.globalData.clientTime = new Date().getTime()
+    wepy.request(that.getApiUrl('/index/getInitInfo4Weapp')).then((data) => {
+       that.globalData.serverTime = data.curtime * 1000
+       that.globalData.clientTime = new Date().getTime()
+       that.$apply();
+    }).catch((e) =>{
+
+    })
+
+    if (wepy.getUpdateManager) {
+      const updateManager = wx.getUpdateManager()
+      updateManager.onUpdateReady(function () {
+        // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+        updateManager.applyUpdate()
+      })
+    }
+  };
+
+  getApiUrl (url) {
+    return protocol + "//" + host + url
+  };
+
+
+
+  // getWxInfo(opt) {
+  //   opt = opt || {};
+  //   if (opt.scope == 'scope.userInfo') {
+  //     return login(opt);
+  //   } else {
+  //     return this.authorize(opt);
+  //   }
+  // };
+
+  // authorize (opt) {
+  //   let _opt = objectAssign({}, {
+  //     scope: 'scope.userInfo',
+  //     showLayer: true
+  //   }, opt)
+  //   let that = _opt.target
+  //   new Promise((resolve, reject)=>{
+  //     if(_opt.scope === 'scope.userInfo') {
+  //       reject();
+  //     }else{
+  //       wxPromisify(wx.authorize) ({ scope: _opt.scope }).then((data) => {
+  //         _opt.success && _opt.success()
+  //         resolve();
+  //       });
+  //     }
+  //   }).catch((e) => {
+  //     wxPromisify(wx.getSetting)().then((res) => {
+  //       if (!res.authSetting[_opt.scope]) {
+  //         if (_opt.scope == 'scope.userInfo') {
+  //           if(_opt.showLayer) {
+  //             authorizeShow(that, _opt.scope, _opt.text, (userInfo) => {
+  //               authorizeHide(that)
+  //               _opt.success && _opt.success(userInfo)
+  //             })
+  //           }
+  //         }else{
+  //           authorizeShow(that, _opt.scope, _opt.text, () => {    
+  //             // text是一个数组，第一项为title(字符串)，第二项为desc(数组)
+  //               wx.openSetting(); // 打开设置页
+  //               authorizeHide(that)
+  //               _opt.success && _opt.success()
+  //             })
+  //           }
+  //         } else {
+  //           if(_opt.scope == 'scope.userInfo'){
+  //             wx.getUserInfo({withCredentials: true, success: _opt.success})
+  //           } else {
+  //             _opt.success && _opt.success()
+  //           }
+  //         }
+  //       })
+  //   });
+  // };
+  
+  // // 跳转至当前小程序的其他页面
+  // toPage(data){
+  //   let that = this;
+  //   // 首页， 我的
+  //   if(/^\/pages\/(index|my)\/index/.test(data)){
+  //     wx.reLaunch({
+  //       url: data
+  //     });
+  //   }else{
+  //     wx.navigateTo({
+  //       url: data
+  //     });
+  //   }
+  // };
+
+  sleep (s) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('promise resolved')
+      }, s * 1000)
+    })
+  };
+
+  async testAsync () {
+    const data = await this.sleep(3)
+    console.log(data)
+  };
+
+  // getUserInfo(cb) {
+  //   const that = this
+  //   if (this.globalData.userInfo) {
+  //     return this.globalData.userInfo
+  //   }
+  //   wepy.getUserInfo({
+  //     success (res) {
+  //       that.globalData.userInfo = res.userInfo
+  //       cb && cb(res.userInfo)
+  //     }
+  //   })
+  // };
+}
+</script>
